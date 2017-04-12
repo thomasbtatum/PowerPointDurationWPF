@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Presentation;
 using System;
 using System.Windows;
+using DocumentFormat.OpenXml;
 
 namespace WpfApp1
 {
@@ -22,7 +23,7 @@ namespace WpfApp1
             {
                 FileName = "AnyPowerPointFile",
                 DefaultExt = ".pptx",
-                Filter = "PowerPoint Document (.pptx)|*.pptx"
+                Filter = "PowerPoint Document (.pptx)|*.pptx| (.ppsx) | *.ppsx"
             };
 
             // Show save file dialog box
@@ -50,16 +51,17 @@ namespace WpfApp1
                     int slideNumber = 1;
                     foreach (var slideId in presentation.SlideIdList.Elements<SlideId>())
                     {
-
                         SlidePart slidePart = presentationPart.GetPartById(slideId.RelationshipId) as SlidePart;
-                        var slideDuration = GetSlideDuration(slidePart);
 
-                        int slideDurationMilli = 0;
-                        Int32.TryParse(slideDuration, out slideDurationMilli);
-                        TimeSpan slideTime = TimeSpan.FromMilliseconds(slideDurationMilli);
+                        var advanceAfterTimeDuration = ConvertStringToInt(GetSlideAdvanceAfterTimeDuration(slidePart));
+                        var anitationsDuration = GetSlideAnimationsDuration(slidePart);
+                        var transitionDuration = ConvertStringToInt(GetSlideTransitionsDuration(slidePart));
+
+                        var totalSlideDuration = advanceAfterTimeDuration + anitationsDuration + transitionDuration;
+                        TimeSpan slideTime = TimeSpan.FromMilliseconds(totalSlideDuration);
                         presentationDuration = presentationDuration.Add(slideTime);
 
-                        textBox.Text += $"Slide {slideNumber} Duration: {slideDuration} msecs." + Environment.NewLine;
+                        textBox.Text += $"Slide {slideNumber} Total Duration: {totalSlideDuration} ms. (aat: {advanceAfterTimeDuration} ms, ani: {anitationsDuration} ms trn: {transitionDuration} ms)" + Environment.NewLine;
                         slideNumber++;
                     }
 
@@ -74,7 +76,57 @@ namespace WpfApp1
 
         }
 
-        private string GetSlideDuration(SlidePart slidePart)
+        private string GetSlideTransitionsDuration(SlidePart slidePart)
+        {
+            string returnDuration = "0";
+            try
+            {
+                Slide slide1 = slidePart.Slide;
+
+                var transitions = slide1.Descendants<Transition>();
+                foreach (var transition in transitions)
+                {
+                    if (transition.Duration.HasValue)
+                        return transition.Duration;
+                    break;
+                }
+            }
+            catch (Exception ex)
+            {
+                //Do nothing
+            }
+
+            return returnDuration;
+        }
+
+        private int GetSlideAnimationsDuration(SlidePart slidePart)
+        {
+            int returnDuration = 0;
+            try
+            {
+                Slide slide1 = slidePart.Slide;
+
+                var timeNotes = slide1.Descendants<CommonTimeNode>();
+                foreach (var timeNode in timeNotes)
+                {
+                    if (timeNode.Duration.HasValue)
+                    {
+                        returnDuration += ConvertStringToInt(timeNode.Duration);
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                //Do nothing
+            }
+
+            return returnDuration;
+        }
+
+
+
+        private string GetSlideAdvanceAfterTimeDuration(SlidePart slidePart)
         {
             string returnDuration = "0";
             try
@@ -96,6 +148,22 @@ namespace WpfApp1
 
             return returnDuration;
 
+        }
+
+        private int ConvertStringToInt(StringValue stringValue)
+        {
+            int convertedInt = 0;
+            try
+            {
+                Int32.TryParse(stringValue, out convertedInt);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return convertedInt;
         }
     }
 }

@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="268" Margin="10,41,0,0" TextWrapping="Wrap" Text="Duration Times go here" VerticalAlignment="Top" Width="497"/>
+        Title="MainWindow" Height="600" Width="525">
+    <DockPanel VerticalAlignment="Stretch">
+        <TextBox x:Name="textBox" DockPanel.Dock="Top" Margin="0,0,0,0" TextWrapping="Wrap" Text="Duration Times go here" VerticalAlignment="Stretch" Width="auto" Height="500" HorizontalAlignment="Stretch"/>
 
-        <Button x:Name="button" Content="Choose PowerPoint File..." HorizontalAlignment="Left" Margin="126,10,0,0" VerticalAlignment="Top" Width="155" Click="button_Click"/>
+        <Button x:Name="button" Content="Choose PowerPoint File..." HorizontalAlignment="Left"  VerticalAlignment="Top" Width="155" Click="button_Click" DockPanel.Dock="Bottom"/>
 
-    </Grid>
+    </DockPanel>
 </Window>
