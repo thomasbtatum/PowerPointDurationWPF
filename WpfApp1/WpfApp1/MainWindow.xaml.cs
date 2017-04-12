@@ -86,7 +86,7 @@ namespace WpfApp1
                 var transitions = slide1.Descendants<Transition>();
                 foreach (var transition in transitions)
                 {
-                    if (transition.Duration.HasValue)
+                    if (transition.Duration != null && transition.Duration.HasValue)
                         return transition.Duration;
                     break;
                 }
@@ -104,12 +104,12 @@ namespace WpfApp1
             int returnDuration = 0;
             try
             {
-                Slide slide1 = slidePart.Slide;
+                var timing = slidePart.Slide.Timing;
 
-                var timeNotes = slide1.Descendants<CommonTimeNode>();
-                foreach (var timeNode in timeNotes)
+                var timeNodes = timing. Descendants<CommonTimeNode>();
+                foreach (var timeNode in timeNodes)
                 {
-                    if (timeNode.Duration.HasValue)
+                    if (timeNode.Duration != null && timeNode.Duration.HasValue)
                     {
                         returnDuration += ConvertStringToInt(timeNode.Duration);
                     }

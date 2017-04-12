@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="525">
     <DockPanel VerticalAlignment="Stretch">
-        <TextBox x:Name="textBox" DockPanel.Dock="Top" Margin="0,0,0,0" TextWrapping="Wrap" Text="Duration Times go here" VerticalAlignment="Stretch" Width="auto" Height="500" HorizontalAlignment="Stretch"/>
+        <TextBox x:Name="textBox" DockPanel.Dock="Top" Margin="10,10,10,10" TextWrapping="Wrap" Text="Duration Times go here" VerticalAlignment="Stretch" Width="auto" Height="500" HorizontalAlignment="Stretch"/>
 
         <Button x:Name="button" Content="Choose PowerPoint File..." HorizontalAlignment="Left"  VerticalAlignment="Top" Width="155" Click="button_Click" DockPanel.Dock="Bottom"/>
 
